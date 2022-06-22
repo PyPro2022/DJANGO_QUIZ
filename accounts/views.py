@@ -9,7 +9,6 @@ from django.shortcuts import render
 
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView
-from django.views.generic import TemplateView
 
 from .forms import AccountRegisterForm, AccountUpdateForm
 from .utils import signer
@@ -20,10 +19,6 @@ class AccountRegisterView(CreateView):
     template_name = 'accounts/register.html'
     success_url = reverse_lazy('accounts:register_done')
     form_class = AccountRegisterForm
-
-
-class AccountRegisterDoneView(TemplateView):
-    template_name = 'accounts/register_done.html'
 
 
 def user_activate(request, sign):
@@ -71,3 +66,11 @@ class AccountUpdateProfileView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+#  Кладовка
+# Импорты
+# from django.views.generic import TemplateView
+
+# Вьюхи
+# class AccountRegisterDoneView(TemplateView):
+#     template_name = 'accounts/register_done.html'
