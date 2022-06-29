@@ -1,3 +1,5 @@
+# .../DJANGO_QUIZ/quiz/admin.py
+
 from django.contrib import admin
 
 from .forms import ChoiceInlineFormSet
