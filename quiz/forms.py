@@ -18,7 +18,7 @@ class QuestionInlineFormSet(forms.BaseInlineFormSet):
         for form in self.forms:
             lst_order_num.append(form.cleaned_data['order_num']) # получили список значений order_num
 
-        chk_lst = [i for i in range(1, len(lst_order_num)+1)]  #создали контрольный список
+        chk_lst = [i for i in range(1, len(lst_order_num)+1)]  # создали контрольный список
 
         for i in range(len(lst_order_num)):  # сверяем списки по-элементно, чтобы выловить параметры
             if lst_order_num[i] == chk_lst[i]:
