@@ -1,7 +1,9 @@
-#.../DJANGO_QUIZ/quiz/forms.py
+# .../DJANGO_QUIZ/quiz/forms.py
 
 from django import forms
 from django.core.exceptions import ValidationError
+
+from .models import Choice
 
 
 class QuestionInlineFormSet(forms.BaseInlineFormSet):
@@ -57,6 +59,19 @@ class ChoiceInlineFormSet(forms.BaseInlineFormSet):
             raise ValidationError('НЕ разрешено выбирать все варианты')
 
 
+class ChoiceForm(forms.ModelForm):
+    is_selected = forms.BooleanField(required=False)
+
+    class Meta:
+        model = Choice
+        fields = ['text']
+
+
+ChoicesFormSet = forms.modelformset_factory(
+    model=Choice,
+    form=ChoiceForm,
+    extra=0
+)
 #  Кладовка
 
 # for form in self.forms:

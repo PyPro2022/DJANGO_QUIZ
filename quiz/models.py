@@ -14,7 +14,7 @@ class BaseModel(models.Model):
 
 class Exam(BaseModel):
     QUESTION_MIN_LIMIT = 3
-    QUESTION_MAX_LIMIT = 10
+    QUESTION_MAX_LIMIT = 100
 
     class LEVEL(models.IntegerChoices):
         BASIC = 0, 'Basic'
@@ -77,3 +77,18 @@ class Result(BaseModel):
     class Meta:
         verbose_name = 'Result'
         verbose_name_plural = 'Results'
+
+    def update_result(self, order_number, question, selected_choices):
+        correct_choice = [choice.is_correct for choice in question.choices.all()]
+        correct_answer = True
+        for z in zip(selected_choices, correct_choice):
+            correct_answer &= (z[0] == z[1])
+
+        self.num_correct_answers += int(correct_answer)
+        self.num_incorrect_answers += 1 - int(correct_answer)
+        self.current_order_number = order_number
+
+        if order_number == question.exam.questions.count():
+            self.state = self.STATE.FINISHED
+
+        self.save()
