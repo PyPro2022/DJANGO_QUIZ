@@ -1,3 +1,4 @@
+import datetime
 from uuid import uuid4
 
 from django.contrib.auth import get_user_model
@@ -92,3 +93,12 @@ class Result(BaseModel):
             self.state = self.STATE.FINISHED
 
         self.save()
+
+    def get_timedelta(self):
+        x = self.update_timestamp-self.create_timestamp  # получаем таймдельту
+        if not x.__str__()[1].isdigit():  # если начинается с 0:мм:сс, то добавляем ещё один 0 сначала
+            y = datetime.time.fromisoformat('0'+x.__str__().split('.')[0]) # отсекаем милисекунды и переделываем оставшееся в datetime объект для передачи в шаблон
+            return y
+        else:  # если начинается с, например, 12:мм:сс, то оставляем так
+            z = datetime.time.fromisoformat(x.__str__().split('.')[0])
+            return z

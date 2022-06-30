@@ -16,12 +16,20 @@
                     <tbody>
                         <tr>
                             <td>Начат</td>
-                            <td>{{ result.create_timestamp|date:'d.m.Y, H:i' }}</td>
+                            <td>{{ result.create_timestamp|date:'d.m.Y, H:i:s' }}</td>
                         </tr>
                         <tr>
                             <td>Окончен</td>
-                            <td>{{ result.update_timestamp|date:'d.m.Y, H:i' }}</td>
+                            <td>{{ result.update_timestamp|date:'d.m.Y, H:i:s' }}</td>
                         </tr>
+                        <tr>
+                            <td>Время</td>
+<!--  Вариант через джанго-фильры. Недостаток: точность только до минут                          -->
+<!--                            <td>{{ result.create_timestamp|timesince:result.update_timestamp }}</td>-->
+<!--  /Вариант через джанго-фильры. Недостаток: точность только до минут                          -->
+                             <td>{{ result.get_timedelta|time:'H:i:s'}}</td>
+                        </tr>
+
                         <tr>
                             <td>Пользователь</td>
                             <td>{{ result.user }}</td>
