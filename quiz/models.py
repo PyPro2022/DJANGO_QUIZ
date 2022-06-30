@@ -102,3 +102,10 @@ class Result(BaseModel):
         else:  # если начинается с, например, 12:мм:сс, то оставляем так
             z = datetime.time.fromisoformat(x.__str__().split('.')[0])
             return z
+
+    def points(self):
+        x = self.num_correct_answers-self.num_incorrect_answers
+        if x >0:
+            return x
+        else:
+            return 0
