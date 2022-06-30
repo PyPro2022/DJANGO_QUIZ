@@ -16,11 +16,11 @@
                     <tbody>
                         <tr>
                             <td>Начат</td>
-                            <td>{{ result.create_timestamp }}</td>
+                            <td>{{ result.create_timestamp|date:'d.m.Y, H:i' }}</td>
                         </tr>
                         <tr>
                             <td>Окончен</td>
-                            <td>{{ result.update_timestamp }}</td>
+                            <td>{{ result.update_timestamp|date:'d.m.Y, H:i' }}</td>
                         </tr>
                         <tr>
                             <td>Пользователь</td>
