@@ -73,3 +73,7 @@ class AccountUpdateForm(UserChangeForm):
             'city',
             'avatar',
         ]
+
+        widgets = {
+            'birthday': forms.DateInput(attrs={'type': 'date'})
+        }
