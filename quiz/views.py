@@ -3,8 +3,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic.list import MultipleObjectMixin
 
 from .forms import ChoicesFormSet
 from .models import Exam, Result, Question
@@ -16,25 +17,31 @@ class ExamListView(ListView):
     context_object_name = 'exams'
 
 
-class ExamDetailView(LoginRequiredMixin, DetailView):
+class ExamDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     model = Exam
     template_name = 'exams/details.html'
     context_object_name = 'exam'
     pk_url_kwarg = 'uuid'
+    paginate_by = 3
 
     def get_object(self, queryset=None):
         uuid = self.kwargs.get('uuid')
-
         return self.model.objects.get(uuid=uuid)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['result_list'] = Result.objects.filter(
+        context = super().get_context_data(object_list=self.get_queryset(), **kwargs)
+        # context['result_list'] = Result.objects.filter(
+        #     exam=self.get_object(),
+        #     user=self.request.user
+        # ).order_by('state', '-create_timestamp')
+
+        return context
+
+    def get_queryset(self):
+        return Result.objects.filter(
             exam=self.get_object(),
             user=self.request.user
         ).order_by('state', '-create_timestamp')
-
-        return context
 
 
 class ExamResultCreateView(LoginRequiredMixin, CreateView):
@@ -55,7 +62,7 @@ class ExamResultCreateView(LoginRequiredMixin, CreateView):
                 kwargs={
                     'uuid': uuid,
                     'res_uuid': result.uuid,
-                    'order_num': 1
+                    # 'order_num': 1
                 }
             )
         )
@@ -64,10 +71,11 @@ class ExamResultCreateView(LoginRequiredMixin, CreateView):
 class ExamResultQuestionView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         uuid = kwargs.get('uuid')
-        order_num = kwargs.get('order_num')
+        # order_num = kwargs.get('order_num')
+        result = Result.objects.get(uuid=kwargs.get('res_uuid'))
         question = Question.objects.get(
             exam__uuid=uuid,
-            order_num=order_num
+            order_num=result.current_order_number + 1
         )
 
         choices = ChoicesFormSet(queryset=question.choices.all())
@@ -77,16 +85,16 @@ class ExamResultQuestionView(LoginRequiredMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         uuid = kwargs.get('uuid')
         res_uuid = kwargs.get('res_uuid')
-        order_num = kwargs.get('order_num')
-
+        # order_num = kwargs.get('order_num')
+        result = Result.objects.get(uuid=res_uuid)
         question = Question.objects.get(
             exam__uuid=uuid,
-            order_num=order_num
+            order_num=result.current_order_number + 1
         )
         choices = ChoicesFormSet(data=request.POST)
         selected_choices = ['is_selected' in form.changed_data for form in choices.forms]
         result = Result.objects.get(uuid=res_uuid)
-        result.update_result(order_num, question, selected_choices)
+        result.update_result(result.current_order_number + 1, question, selected_choices)
 
         if result.state == Result.STATE.FINISHED:
             return HttpResponseRedirect(
@@ -105,7 +113,7 @@ class ExamResultQuestionView(LoginRequiredMixin, UpdateView):
                 kwargs={
                     'uuid': uuid,
                     'res_uuid': res_uuid,
-                    'order_num': order_num + 1
+                    # 'order_num': order_num + 1
                 }
             )
         )
@@ -139,7 +147,7 @@ class ExamResultUpdateView(LoginRequiredMixin, UpdateView):
                 kwargs={
                     'uuid': uuid,
                     'res_uuid': result.uuid,
-                    'order_num': result.current_order_number + 1
+                    # 'order_num': result.current_order_number + 1
                 }
             )
         )
