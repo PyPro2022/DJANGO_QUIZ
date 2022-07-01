@@ -1,8 +1,10 @@
 # .../DJANGO_QUIZ/quiz/urls.py
 from django.urls import path
 
-from quiz.views import ExamListView, ExamDetailView, ExamResultCreateView, ExamResultDetailView, ExamResultQuestionView, \
+from .views import ExamListView, ExamDetailView, ExamResultCreateView, ExamResultDetailView, ExamResultQuestionView, \
     ExamResultUpdateView
+
+from .views import ExamResultDeleteView
 
 app_name = 'quiz'
 
@@ -14,4 +16,6 @@ urlpatterns = [
     path('<uuid:uuid>/result/<uuid:res_uuid>/update/', ExamResultUpdateView.as_view(), name='result_update'),
     path('<uuid:uuid>/result/<uuid:res_uuid>/question/<int:order_num>/', ExamResultQuestionView.as_view(),
          name='question'),
+    path('<uuid:uuid>/result/<uuid:res_uuid>/delete/', ExamResultDeleteView.as_view(), name='result_delete'),
+
 ]

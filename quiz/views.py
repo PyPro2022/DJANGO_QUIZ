@@ -3,7 +3,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .forms import ChoicesFormSet
@@ -119,7 +119,6 @@ class ExamResultDetailView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         uuid = self.kwargs.get('res_uuid')
-
         return self.get_queryset().get(uuid=uuid)
 
 
@@ -134,7 +133,6 @@ class ExamResultUpdateView(LoginRequiredMixin, UpdateView):
             uuid=res_uuid,
             exam__uuid=uuid,
         )
-
         return HttpResponseRedirect(
             reverse(
                 'quiz:question',
@@ -148,4 +146,22 @@ class ExamResultUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class ExamResultDeleteView(LoginRequiredMixin, DeleteView):
-    pass
+    model = Result
+    context_object_name = 'result'
+    template_name = 'exams/delete.html'
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('res_uuid')
+        return self.get_queryset().get(uuid=uuid)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['exam'] = Exam.objects.get(
+            results=self.get_object(),
+        )
+        return context
+
+    def get_success_url(self):
+        uuid = self.get_context_data()['result'].exam.uuid
+        return reverse('quiz:details', kwargs={'uuid': uuid})
+

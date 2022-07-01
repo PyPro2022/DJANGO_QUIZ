@@ -63,7 +63,7 @@
                 {% for result in result_list %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ result.create_timestamp|date:'d.m.Y, H:i' }}</td>
+                    <td>{{ result.create_timestamp|date:'d.m.Y, H:i:s' }}</td>
                     <td>{{ result.points }}</td>
                     <td>{{ result.get_timedelta|time:'H:i:s' }}</td>
                     <td>
@@ -71,7 +71,7 @@
                             <a class="btn btn-warning" href="{% url 'quiz:result_update' exam.uuid result.uuid %}">
                                 Продолжить
                             </a>
-                            <a class="btn btn-danger" href="#">
+                            <a class="btn btn-danger" href="{% url 'quiz:result_delete' exam.uuid result.uuid %}">
                                 Удалить
                             </a>
                         {% else %}
