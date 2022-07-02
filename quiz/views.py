@@ -1,6 +1,6 @@
 # .../DJANGO_QUIZ/quiz/views.py
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -163,7 +163,7 @@ class ExamResultUpdateView(LoginRequiredMixin, UpdateView):
         )
 
 
-class ExamResultDeleteView(LoginRequiredMixin, DeleteView):
+class ExamResultDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Result
     context_object_name = 'result'
     template_name = 'exams/delete.html'
