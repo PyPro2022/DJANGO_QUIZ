@@ -108,7 +108,7 @@ class Result(BaseModel):
 
     def points(self):
         x = self.num_correct_answers-self.num_incorrect_answers
-        if x >0:
+        if x > 0:
             return x
         else:
             return 0
