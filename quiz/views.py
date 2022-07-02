@@ -167,6 +167,7 @@ class ExamResultDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVi
     model = Result
     context_object_name = 'result'
     template_name = 'exams/delete.html'
+    permission_required = ['accounts.view_statistics']
 
     def get_object(self, queryset=None):
         uuid = self.kwargs.get('res_uuid')

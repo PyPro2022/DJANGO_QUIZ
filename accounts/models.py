@@ -15,7 +15,7 @@ class CustomUser(AbstractUser):
         permissions = [
             ('view_statistics', 'Can view statistics'),
         ]
-
+    #       (имя_пермишена, описание)
     def __str__(self):
         return self.username
 
