@@ -12,8 +12,8 @@
 
 {% block content %}
 <!--служебная информация для нужд отладки-->
-<!--{{template}}<br>-->
-<!--{{view}}<br>-->
+{{view.template_name}}<br>
+{{view}}<br>
 <!--{{view.get_context_data | pprint}}<br>-->
 <!--/служебная информация для нужд отладки-->
 
@@ -43,19 +43,35 @@
                             <td>{{ result.user }}</td>
                         </tr>
                         <tr>
-                            <td>Результат</td>
-    <td>{% expression '%1 * 100 // (%1+%2)' result.num_correct_answers result.num_incorrect_answers %} %</td>
+<!--                            <td>Результат</td>-->
+<!--&lt;!&ndash;                            \/ можно заморочиться и пробросить exam.questions_count \| &ndash;&gt;-->
+<!--    <td>{% expression '%1 * 100 // (%1+%2)' result.num_correct_answers result.num_incorrect_answers %} %</td>-->
 
                         </tr>
                         <tr>
-                            <td>Правильные/Не правильные</td>
-                            <td>{{ result.num_correct_answers }} / {{ result.num_incorrect_answers }}</td>
+                           <td>Результат</td>
+                            <td>
+                            {% expression '%1 * 100 // (%1+%2)' result.num_correct_answers result.num_incorrect_answers as progress_level%}
+                            <div class="progress">
+                                      <div class="progress-bar bg-success"
+                                           role="progressbar"
+                                           style="width: {{ progress_level }}% "
+                                           aria-valuenow="{{ progress_level }}"
+                                           aria-valuemin="0"
+                                           aria-valuemax="100">
+                                          {% expression '%1 * 100 // (%1+%2)' result.num_correct_answers result.num_incorrect_answers%}%
+                                      </div>
+                                    </div>
+                            </td>
                         </tr>
                         <tr>
                             <td>Баллы</td>
                             <td>{{ result.points }}</td>
                         </tr>
-
+                        <tr>
+<!--                            <td>Правильные/Не правильные</td>-->
+<!--                            <td>{{ result.num_correct_answers }} / {{ result.num_incorrect_answers }}</td>-->
+                        </tr>
                     </tbody>
               </table>
             </div>

@@ -124,7 +124,6 @@ class ExamResultDetailView(LoginRequiredMixin, DetailView):
     template_name = 'results/details.html'
     context_object_name = 'result'
     pk_url_kwarg = 'uuid'
-    extra_context = {'template':template_name}  # служебная информация для нужд отладки
 
     def get_object(self, queryset=None):
         uuid = self.kwargs.get('res_uuid')
@@ -132,8 +131,9 @@ class ExamResultDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs): # служебная информация для нужд отладки
         x = super().get_context_data()
-        print(x)
+        # print(x)
         return x
+
 
 class ExamResultUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
