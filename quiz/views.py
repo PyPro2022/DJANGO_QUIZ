@@ -1,5 +1,5 @@
 # .../DJANGO_QUIZ/quiz/views.py
-
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -93,6 +93,19 @@ class ExamResultQuestionView(LoginRequiredMixin, UpdateView):
         )
         choices = ChoicesFormSet(data=request.POST)
         selected_choices = ['is_selected' in form.changed_data for form in choices.forms]
+        print('>>>>>>>',selected_choices)
+        if selected_choices.count(True) > 1 or selected_choices.count(True) == 0:
+            messages.error(self.request, '[!] Так нельзя! Выберите только один вариант ответа.')
+            return HttpResponseRedirect(
+                reverse(
+                    'quiz:question',
+                    kwargs={
+                        'uuid': uuid,
+                        'res_uuid': res_uuid,
+                    }
+                )
+            )
+
         result = Result.objects.get(uuid=res_uuid)
         result.update_result(result.current_order_number + 1, question, selected_choices)
 
@@ -117,7 +130,6 @@ class ExamResultQuestionView(LoginRequiredMixin, UpdateView):
                 }
             )
         )
-
 
 class ExamResultDetailView(LoginRequiredMixin, DetailView):
     model = Result

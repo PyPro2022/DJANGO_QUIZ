@@ -72,6 +72,8 @@ ChoicesFormSet = forms.modelformset_factory(
     form=ChoiceForm,
     extra=0
 )
+
+
 #  Кладовка
 
 # for form in self.forms:
